@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>team</title>
+</head>
+<body>
+    <table>
+    <thead>
+        <tr>
+            <th>Room Name</th>
+            <th>Team Name</th>
+            <th>Timings</th>
+            <th>Free Slots</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for room in rooms %}
+            <tr>
+                <td>{{ room.room_name }}</td>
+                <td>
+                    {% for booking in room.bookings.all %}
+                        {{ booking.team_name }}<br>
+                    {% empty %}
+                        No Teams
+                    {% endfor %}
+                </td>
+                <td>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Time From</th>
+                                <th>Time To</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for timing in room.timings %}
+                                <tr>
+                                    <td>{{ timing.date }}</td>
+                                    <td>{{ timing.time_from }}</td>
+                                    <td>{{ timing.time_to }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </td>
+                <td>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Start Time</th>
+                                <th>End Time</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for free_slot in room.free_slots %}
+                                <tr>
+                                    <td>{{ free_slot.date }}</td>
+                                    <td>{{ free_slot.start_time }}</td>
+                                    <td>{{ free_slot.end_time }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+</body>
+</html>
