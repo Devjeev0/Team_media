@@ -1,50 +1,71 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>team</title>
+    <title>Room Table</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+        select {
+            padding: 4px;
+        }
+    </style>
 </head>
 <body>
-    <table>
+    <h1>Room Table</h1>
+
+    <!-- Room filter form -->
+    <form onsubmit="event.preventDefault(); filterTable();">
+        <label for="room-filter">Filter by Room:</label>
+        <select id="room-filter">
+            <option value="">All Rooms</option>
+            {% for room in rooms %}
+                <option value="{{ room.room_name }}">{{ room.room_name }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit">Filter</button>
+    </form>
+
+<table>
     <thead>
         <tr>
             <th>Room Name</th>
             <th>Team Name</th>
             <th>Timings</th>
             <th>Free Slots</th>
+            <th>Total Duration (Free Slots)</th>
+            <th>Duration</th> <!-- New column for free slot duration -->
         </tr>
     </thead>
     <tbody>
         {% for room in rooms %}
-            <tr>
-                <td>{{ room.room_name }}</td>
+            <tr class="room-row">
+                <td class="room-name">{{ room.room_name }}</td>
                 <td>
-                    {% for booking in room.bookings.all %}
-                        {{ booking.team_name }}<br>
-                    {% empty %}
+                    {% if room.bookings %}
+                        {% for booking in room.bookings %}
+                            {{ booking.team_name }}<br>
+                        {% endfor %}
+                    {% else %}
                         No Teams
-                    {% endfor %}
+                    {% endif %}
                 </td>
                 <td>
                     <table>
-                        <thead>
-                            <tr>
-                                <th>Date</th>
-                                <th>Time From</th>
-                                <th>Time To</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for timing in room.timings %}
-                                <tr>
-                                    <td>{{ timing.date }}</td>
-                                    <td>{{ timing.time_from }}</td>
-                                    <td>{{ timing.time_to }}</td>
-                                </tr>
-                            {% endfor %}
-                        </tbody>
+                        <!-- Timings table -->
                     </table>
                 </td>
+                <td>
+                    <table>
+                        <!-- Free Slots table -->
+                    </table>
+                </td>
+                <td>{{ room.total_duration }} seconds</td>
                 <td>
                     <table>
                         <thead>
@@ -52,6 +73,7 @@
                                 <th>Date</th>
                                 <th>Start Time</th>
                                 <th>End Time</th>
+                                <th>Duration</th> <!-- New column header -->
                             </tr>
                         </thead>
                         <tbody>
@@ -60,6 +82,7 @@
                                     <td>{{ free_slot.date }}</td>
                                     <td>{{ free_slot.start_time }}</td>
                                     <td>{{ free_slot.end_time }}</td>
+                                    <td>{{ free_slot.duration }} seconds</td> <!-- Display free slot duration -->
                                 </tr>
                             {% endfor %}
                         </tbody>
@@ -70,5 +93,21 @@
     </tbody>
 </table>
 
+    <script>
+        function filterTable() {
+            const selectElement = document.getElementById("room-filter");
+            const filterValue = selectElement.value.toLowerCase();
+            const rows = document.querySelectorAll(".room-row");
+
+            rows.forEach(row => {
+                const roomName = row.querySelector(".room-name").textContent.toLowerCase();
+                if (filterValue === "" || roomName.includes(filterValue)) {
+                    row.style.display = "table-row";
+                } else {
+                    row.style.display = "none";
+                }
+            });
+        }
+    </script>
 </body>
 </html>

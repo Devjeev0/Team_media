@@ -6,31 +6,17 @@
         table {
             border-collapse: collapse;
             width: 100%;
+            border: 1px solid #ccc; /* Add border to the entire table */
         }
         th, td {
             padding: 8px;
             text-align: left;
+            border: 1px solid #ccc; /* Add border to table cells */
         }
         select {
             padding: 4px;
         }
     </style>
-    <script>
-        function filterTable() {
-            const selectElement = document.getElementById("room-filter");
-            const filterValue = selectElement.value.toLowerCase();
-            const rows = document.querySelectorAll(".room-row");
-
-            rows.forEach(row => {
-                const roomName = row.querySelector(".room-name").textContent.toLowerCase();
-                if (filterValue === "" || roomName.includes(filterValue)) {
-                    row.style.display = "table-row";
-                } else {
-                    row.style.display = "none";
-                }
-            });
-        }
-    </script>
 </head>
 <body>
     <h1>Room Table</h1>
@@ -54,6 +40,8 @@
                 <th>Team Name</th>
                 <th>Timings</th>
                 <th>Free Slots</th>
+                <!-- <th>Total Duration (Free Slots)</th> -->
+                <!-- <th>Duration (minutes)</th> -->
             </tr>
         </thead>
         <tbody>
@@ -61,9 +49,9 @@
                 <tr class="room-row">
                     <td class="room-name">{{ room.room_name }}</td>
                     <td>
-                        {% if room.team_names %}
-                            {% for team_name in room.team_names %}
-                                {{ team_name }}<br>
+                        {% if room.bookings %}
+                            {% for booking in room.bookings %}
+                                {{ booking.team_name }}<br> <br> <br>
                             {% endfor %}
                         {% else %}
                             No Teams
@@ -96,6 +84,7 @@
                                     <th>Date</th>
                                     <th>Start Time</th>
                                     <th>End Time</th>
+                                    <th>Duration (minutes)</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -104,14 +93,33 @@
                                         <td>{{ free_slot.date }}</td>
                                         <td>{{ free_slot.start_time }}</td>
                                         <td>{{ free_slot.end_time }}</td>
+                                        <td>{{ free_slot.duration }} minutes</td>
                                     </tr>
                                 {% endfor %}
                             </tbody>
                         </table>
                     </td>
+                    <td>{{ room.total_duration }} </td>
                 </tr>
             {% endfor %}
         </tbody>
     </table>
+    <script>
+        function filterTable() {
+            const selectElement = document.getElementById("room-filter");
+            const filterValue = selectElement.value.toLowerCase();
+            const rows = document.querySelectorAll(".room-row");
+
+            rows.forEach(row => {
+                const roomName = row.querySelector(".room-name").textContent.toLowerCase();
+                if (filterValue === "" || roomName.includes(filterValue)) {
+                    row.style.display = "table-row";
+                } else {
+                    row.style.display = "none";
+                }
+            });
+        }
+    </script>
+
 </body>
 </html>
