@@ -4,29 +4,29 @@ from datetime import datetime, time, timedelta, date
 from django.utils import timezone
 
 
+
+
 class TeamSerializer(serializers.ModelSerializer):
     class Meta:
         model = Team
         fields = '__all__'
-        depth = 1
 
 class TimingSerializer(serializers.ModelSerializer):
+    bookings = TeamSerializer(many=True, read_only=True)
+
     class Meta:
         model = Timing
-        fields = '__all__'
-        depth = 1
+        fields = ['date', 'time_from', 'time_to', 'room', 'bookings']
 
 
 class RoomSerializer(serializers.ModelSerializer):
     timings = TimingSerializer(many=True, read_only=True)
-    bookings = TeamSerializer(many=True, read_only=True)  
-
+    bookings = TeamSerializer(many=True, read_only=True)
     free_slots = serializers.SerializerMethodField()
 
     class Meta:
         model = Room
-        fields = ['id', 'room_name', 'timings', 'bookings', 'free_slots',]  
-        depth = 1
+        fields = ['id', 'room_name', 'timings', 'bookings', 'free_slots']
 
     def get_free_slots(self, obj):
         timings = obj.timings.all().order_by('date', 'time_from')

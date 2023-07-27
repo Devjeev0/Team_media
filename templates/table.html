@@ -31,76 +31,47 @@
         <button type="submit">Filter</button>
     </form>
 
+
 <table>
     <thead>
         <tr>
             <th>Room Name</th>
             <th>Team Name</th>
-            <th>Timings</th>
+            <th>Date</th>
+            <th>Time From</th>
+            <th>Time To</th>
             <th>Free Slots</th>
-            <th>Total Duration (Free Slots)</th>
-            <th>Duration</th> <!-- New column for free slot duration -->
+            <th>Duration (minutes)</th>
         </tr>
     </thead>
     <tbody>
         {% for room in rooms %}
-            <tr class="room-row">
-                <td class="room-name">{{ room.room_name }}</td>
-                <td>
-                    {% if room.bookings %}
-                        {% for booking in room.bookings %}
-                            {{ booking.team_name }}<br>
-                        {% endfor %}
-                    {% else %}
-                        No Teams
-                    {% endif %}
-                </td>
-                <td>
-                    <table>
-                        <!-- Timings table -->
-                    </table>
-                </td>
-                <td>
-                    <table>
-                        <!-- Free Slots table -->
-                    </table>
-                </td>
-                <td>{{ room.total_duration }} seconds</td>
-                <td>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Date</th>
-                                <th>Start Time</th>
-                                <th>End Time</th>
-                                <th>Duration</th> <!-- New column header -->
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for free_slot in room.free_slots %}
-                                <tr>
-                                    <td>{{ free_slot.date }}</td>
-                                    <td>{{ free_slot.start_time }}</td>
-                                    <td>{{ free_slot.end_time }}</td>
-                                    <td>{{ free_slot.duration }} seconds</td> <!-- Display free slot duration -->
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </td>
-            </tr>
+            {% for timing in room.timings %}
+                {% for booking in timing.teams %}
+                    <tr>
+                        <td>{{ room.room_name }}</td>
+                        <td>{{ booking.team_name }}</td>
+                        <td>{{ timing.date }}</td>
+                        <td>{{ timing.time_from }}</td>
+                        <td>{{ timing.time_to }}</td>
+                        <td>{{ booking.free_slots.start_time }} - {{ booking.free_slots.end_time }}</td>
+                        <td>{{ booking.free_slots.duration }} minutes</td>
+                    </tr>
+                {% endfor %}
+            {% endfor %}
         {% endfor %}
     </tbody>
 </table>
+
 
     <script>
         function filterTable() {
             const selectElement = document.getElementById("room-filter");
             const filterValue = selectElement.value.toLowerCase();
-            const rows = document.querySelectorAll(".room-row");
+            const rows = document.querySelectorAll("tbody tr");
 
             rows.forEach(row => {
-                const roomName = row.querySelector(".room-name").textContent.toLowerCase();
+                const roomName = row.querySelector("td:nth-child(1)").textContent.toLowerCase();
                 if (filterValue === "" || roomName.includes(filterValue)) {
                     row.style.display = "table-row";
                 } else {

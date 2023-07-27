@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html>
 <head>
     <title>Room Table</title>
@@ -6,12 +5,10 @@
         table {
             border-collapse: collapse;
             width: 100%;
-            border: 1px solid #ccc; /* Add border to the entire table */
         }
         th, td {
             padding: 8px;
             text-align: left;
-            border: 1px solid #ccc; /* Add border to table cells */
         }
         select {
             padding: 4px;
@@ -37,51 +34,55 @@
         <thead>
             <tr>
                 <th>Room Name</th>
-                <th>Team Name</th>
                 <th>Timings</th>
                 <th>Free Slots</th>
-                <!-- <th>Total Duration (Free Slots)</th> -->
-                <!-- <th>Duration (minutes)</th> -->
             </tr>
         </thead>
         <tbody>
             {% for room in rooms %}
                 <tr class="room-row">
                     <td class="room-name">{{ room.room_name }}</td>
-                    <td>
+                    <!-- <td>
                         {% if room.bookings %}
                             {% for booking in room.bookings %}
-                                {{ booking.team_name }}<br> <br> <br>
+                                {{ booking.team_name }}<br>
                             {% endfor %}
                         {% else %}
                             No Teams
                         {% endif %}
+                    </td> -->
+                    <td>
+<!-- Add this section inside the <table> element -->
+            <table>
+                <thead>
+                    <!-- Table header for the timings -->
+                    <tr>
+                        <th>Team Name</th>
+                        <th>Date</th>
+                        <th>Time From</th>
+                        <th>Time To</th>
+                         <!-- Add this column for displaying team names -->
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Loop through each room and its timings -->
+                    {% for timing in room.timings %}
+                        
+                        <tr>
+                            <td>{{ timing.bookings.team_name}}</td>
+                            <td>{{ timing.date }}</td>
+                            <td>{{ timing.time_from }}</td>
+                            <td>{{ timing.time_to }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+    
                     </td>
                     <td>
                         <table>
                             <thead>
                                 <tr>
-                                    <th>Date</th>
-                                    <th>Time From</th>
-                                    <th>Time To</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for timing in room.timings %}
-                                    <tr>
-                                        <td>{{ timing.date }}</td>
-                                        <td>{{ timing.time_from }}</td>
-                                        <td>{{ timing.time_to }}</td>
-                                    </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </td>
-                    <td>
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Date</th>
                                     <th>Start Time</th>
                                     <th>End Time</th>
                                     <th>Duration (minutes)</th>
@@ -90,10 +91,9 @@
                             <tbody>
                                 {% for free_slot in room.free_slots %}
                                     <tr>
-                                        <td>{{ free_slot.date }}</td>
                                         <td>{{ free_slot.start_time }}</td>
                                         <td>{{ free_slot.end_time }}</td>
-                                        <td>{{ free_slot.duration }} minutes</td>
+                                        <td>{{ free_slot.duration }} minutes</td> <!-- Display the duration -->
                                     </tr>
                                 {% endfor %}
                             </tbody>
@@ -104,6 +104,7 @@
             {% endfor %}
         </tbody>
     </table>
+
     <script>
         function filterTable() {
             const selectElement = document.getElementById("room-filter");
@@ -120,6 +121,5 @@
             });
         }
     </script>
-
 </body>
 </html>
