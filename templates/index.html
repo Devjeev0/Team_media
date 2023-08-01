@@ -53,32 +53,30 @@
                     </td> -->
                     <td>
 <!-- Add this section inside the <table> element -->
-            <table>
-                <thead>
-                    <!-- Table header for the timings -->
-                    <tr>
-                        <th>Team Name</th>
-                        <th>Date</th>
-                        <th>Time From</th>
-                        <th>Time To</th>
-                         <!-- Add this column for displaying team names -->
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- Loop through each room and its timings -->
-                    {% for timing in room.timings %}
-                        
-                        <tr>
-                            <td>{{ timing.bookings.team_name}}</td>
-                            <td>{{ timing.date }}</td>
-                            <td>{{ timing.time_from }}</td>
-                            <td>{{ timing.time_to }}</td>
-                        </tr>
-                    {% endfor %}
+    <table>
+        <thead>
+            <!-- Table header for the timings -->
+            <tr>
+                <th>Team Name</th>
+                <th>Date</th>
+                <th>Time From</th>
+                <th>Time To</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for booking in room.bookings %}
+                    <!-- There's a booking, display the team_name -->
+                <tr>
+                    <td>{{ booking.team_name }}</td>
+                    <td>{{ booking.date }}</td>
+                    <td>{{ booking.time_from }}</td>
+                    <td>{{ booking.time_to }}</td>
+                </tr>
+            {% endfor %}
+                
                 </tbody>
             </table>
     
-                    </td>
                     <td>
                         <table>
                             <thead>
@@ -91,8 +89,8 @@
                             <tbody>
                                 {% for free_slot in room.free_slots %}
                                     <tr>
-                                        <td>{{ free_slot.start_time }}</td>
-                                        <td>{{ free_slot.end_time }}</td>
+                                        <td>{{ free_slot.start_time|time:"H:i a" }}</td>
+                                        <td>{{ free_slot.end_time|time:"H:i a" }}</td>
                                         <td>{{ free_slot.duration }} minutes</td> <!-- Display the duration -->
                                     </tr>
                                 {% endfor %}

@@ -7,7 +7,10 @@ from rest_framework import routers
 from .views import *
 
 router = routers.DefaultRouter()
+router.register(r'data', View)  
 router.register(r'rooms', RoomViewSet)
+router.register(r'timings', TimingViewSet)
+router.register(r'teams', TeamViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),

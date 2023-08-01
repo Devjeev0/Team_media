@@ -13,7 +13,7 @@ from .serializers import *
 from time import strptime
 
 
-class RoomViewSet(viewsets.ModelViewSet):
+class View(viewsets.ModelViewSet):
     queryset = Room.objects.all()
     serializer_class = RoomSerializer
 
@@ -22,6 +22,29 @@ class RoomViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(rooms, many=True)
 
         for room_data in serializer.data:
+            #--------------------------------
+            bookings_data = room_data['bookings']
+
+            # Extract the required fields from each booking and store in a list of dictionaries
+            bookings_list = []
+            for booking_data in bookings_data:
+                try:
+                    booking_info = {
+                        'team_name': booking_data['team_name'],
+                        'date': booking_data['date'],
+                        'time_from': booking_data['time_from'],
+                        'time_to': booking_data['time_to'],
+                    }
+                except KeyError:
+                    # Handle cases where 'time' key is not present
+                    booking_info = {
+                        'team_name': booking_data['team_name'],
+                    }
+                bookings_list.append(booking_info)
+
+            # Replace the bookings data with the updated list of dictionaries
+            room_data['bookings'] = bookings_list
+            #--------------------------------
             for free_slot in room_data['free_slots']:
                 start_time_str = free_slot['start_time'].strftime("%H:%M:%S")
                 end_time_str = free_slot['end_time'].strftime("%H:%M:%S")
@@ -33,9 +56,21 @@ class RoomViewSet(viewsets.ModelViewSet):
 
                 free_slot['duration'] = duration_seconds // 60
 
-        return render(request, 'table.html', {'rooms': serializer.data})
+        return render(request, 'index.html', {'rooms': serializer.data})
 
+#-------------------------------------------------->
+class RoomViewSet(viewsets.ModelViewSet):
+    queryset = Room.objects.all()
+    serializer_class = RoomSerializer 
 
+class TimingViewSet(viewsets.ModelViewSet):
+    queryset = Timing.objects.all()
+    serializer_class = TimingSerializer
+
+class TeamViewSet(viewsets.ModelViewSet):
+    queryset = Team.objects.all()
+    serializer_class = TeamSerializer
+#<------------------------------------------------->
 
 # from datetime import datetime, time, timedelta
 

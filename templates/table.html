@@ -47,15 +47,17 @@
     <tbody>
         {% for room in rooms %}
             {% for timing in room.timings %}
-                {% for booking in timing.teams %}
+                {% for free_slot in room.free_slots %}
                     <tr>
                         <td>{{ room.room_name }}</td>
-                        <td>{{ booking.team_name }}</td>
+                        <td>{{ room.team_name }}</td>
                         <td>{{ timing.date }}</td>
                         <td>{{ timing.time_from }}</td>
                         <td>{{ timing.time_to }}</td>
-                        <td>{{ booking.free_slots.start_time }} - {{ booking.free_slots.end_time }}</td>
-                        <td>{{ booking.free_slots.duration }} minutes</td>
+                        <td>{{ free_slots.start_time }}</td>
+                        <td>{{ free_slots.end_time }}</td>
+                        <td>{{ free_slots.duration }} minutes</td>
+                        <td>{{ room.total_duration}}</td>
                     </tr>
                 {% endfor %}
             {% endfor %}
@@ -82,3 +84,29 @@
     </script>
 </body>
 </html>
+
+
+!----------------------------------
+<table>
+    <thead>
+        <!-- Table header for the timings -->
+        <tr>
+            <th>Team Name</th>
+            <th>Date</th>
+            <th>Time From</th>
+            <th>Time To</th>
+             <!-- Add this column for displaying team names -->
+        </tr>
+    </thead>
+    <tbody>
+        <!-- Loop through each room and its timings -->
+        {% for timing in room.timings %}
+            <tr>
+            {% for name in room.bookings %}
+                <td>{{ name.team_name}}</td>
+                <td>{{ timing.date }}</td>
+                <td>{{ timing.time_from }}</td>
+                <td>{{ timing.time_to }}</td>
+            </tr>
+            {% endfor %}
+        {% endfor %}

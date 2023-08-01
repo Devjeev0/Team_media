@@ -13,15 +13,19 @@ class Room(models.Model):
             return Team.objects.filter(room=self, time__date=date)
         
         
+        
+        
 
 class Timing(models.Model):
         date = models.DateField()
         time_from = models.TimeField()
         time_to = models.TimeField()
         room = models.ForeignKey(Room, on_delete=models.CASCADE, related_name='timings')
+        
 
         def __str__(self):
             return f"{self.room.room_name} - {self.date} {self.time_from}-{self.time_to}"
+        
 
 class Team(models.Model):
         team_name = models.CharField(max_length=100, default='')
